@@ -45,14 +45,30 @@ function initializeServiceWorker() {
   // We first must register our ServiceWorker here before any of the code in
   // sw.js is executed.
   // B1. TODO - Check if 'serviceWorker' is supported in the current browser
-  // B2. TODO - Listen for the 'load' event on the window object.
-  // Steps B3-B6 will be *inside* the event listener's function created in B2
-  // B3. TODO - Register './sw.js' as a service worker (The MDN article
-  //            "Using Service Workers" will help you here)
-  // B4. TODO - Once the service worker has been successfully registered, console
-  //            log that it was successful.
-  // B5. TODO - In the event that the service worker registration fails, console
-  //            log that it has failed.
+  if ('serviceWorker' in navigator) {
+    // B2. TODO - Listen for the 'load' event on the window object.
+    window.addEventListener('load', async () => {
+      // Steps B3-B6 will be *inside* the event listener's function created in B2
+      // B3. TODO - Register './sw.js' as a service worker (The MDN article
+      //            "Using Service Workers" will help you here)
+      try {
+        const registration = await navigator.serviceWorker.register('./sw.js', {
+          scope: '/',
+        });
+
+        console.log('Service Worker successfully registered');
+      } catch (error) {
+        console.log('Servioce Worker registration failed:', error)
+      }
+      // B4. TODO - Once the service worker has been successfully registered, console
+      //            log that it was successful.
+      // B5. TODO - In the event that the service worker registration fails, console
+      //            log that it has failed.
+
+    });
+  }
+
+
   // STEPS B6 ONWARDS WILL BE IN /sw.js
 }
 
@@ -116,7 +132,7 @@ async function getRecipes() {
         }
       } catch (err) {
         // A10. TODO - Log any errors from catch using console.error
-        console.error('Error fetching recipe: ', err);
+        console.error('Error fetching recipe:', err);
         // A11. TODO - Pass any errors to the Promise's reject() function
         reject(err);
       }
